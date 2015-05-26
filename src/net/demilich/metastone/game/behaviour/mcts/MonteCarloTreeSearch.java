@@ -16,7 +16,14 @@ public class MonteCarloTreeSearch extends Behaviour {
 	
 	private final static Logger logger = LoggerFactory.getLogger(MonteCarloTreeSearch.class);
 	
-	private static final int ITERATIONS = 500;
+	private int numSims;
+
+	//TODO support arguments for the UCT policy. This might be better done somewhere else.
+	public MonteCarloTreeSearch(int numSims){
+		super();
+		this.numSims = numSims;
+	}
+
 
 	@Override
 	public String getName() {
@@ -43,7 +50,7 @@ public class MonteCarloTreeSearch extends Behaviour {
 		Node root = new Node(null, player.getId());
 		root.initState(context, validActions);
 		UctPolicy treePolicy = new UctPolicy();
-		for (int i = 0; i < ITERATIONS; i++) {
+		for (int i = 0; i < this.numSims; i++) {
 			root.process(treePolicy);
 		}
 		GameAction bestAction = root.getBestAction();

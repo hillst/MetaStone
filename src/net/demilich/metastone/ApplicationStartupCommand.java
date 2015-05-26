@@ -22,4 +22,5 @@ public class ApplicationStartupCommand extends SimpleCommand<GameNotification> {
 		getFacade().registerMediator(new DialogMediator());
 	}
 
+
 }
