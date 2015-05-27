@@ -1,0 +1,95 @@
+MC Planning Library
+
+Updated: 2/7/12
+
+All project files can be found at
+http://beaversource.oregonstate.edu/social/pg/projects/2608/mc-planning-library/.
+
+This library provides a variety of domains to test various agents. These domains
+inculde Backgammon, Connect 4 and others. The library also includes a Monte-Carlo
+planning agent among other agents. There is a build in command line interface
+for testing agents on various domains. The structure of the library is built
+so that it is easy to add additional agents and domains.
+
+The manual.pdf file has information about how to use this software and how
+new domains and agents may be added.
+
+*Quick Start Guide
+
+The included McPlan.jar file may be used to run tests.
+To perform tests in interactive mode no  parameters should be
+passed. Otherwise an input file may be used to run larger
+numbers of tests.
+
+java -jar McPlan.jar [input file name] [output file name]
+
+To check the version of the current jar file use
+
+java -jar McPlan.jar [-v | -version]
+
+In order to specify the memory limit that java can use
+you may add the command -Xmx<amount of memory>.
+
+For example to use 4 gigabytes of memory for a test use
+java -Xmx4g -jar McPlan.jar ...
+
+Refer to the manual for input and output file format.
+
+*Running Tests on Monte
+
+You must be connected to the internet from campus to
+directly log into monte. If you are somewhere else
+then you must log into the nome server first.
+
+Use your ssh client to log into nome with
+<username>@nome.eecs.oregonstate.edu
+
+Once you are logged into nome log into monte with 
+<username>@monte.eecs.oregonstate.edu
+
+In order to run tests on monte that will keep running
+even after you log out you need to create a screen session.
+Use the command "screen" to create a new screen. Once in
+this screen you may run tests using
+java -jar McPlan.jar [intput file name] [output file name] &
+Remember to use the & symbol so that the test runs in the background.
+You can run multiple tests this way on monte.
+
+To see all tests that are currently running use the command:
+"ps -fu <username>". This will list all processes you are currently
+running.
+
+Another useful command is "top". It will give you information
+about the memory usage and processor usage of each process on monte.
+
+When you are done creating tests and want to exit you need to use
+the command "<ctr>-A-D". This will detach you from the screen that you
+created. Once detached you may exit the connection to monte and the
+screen and all tests on it will continue to run.
+If you dont do this then the processes you created will be terminated.
+When you log back on to monte to check on your tests you need to use the
+command "screen -r". This will resume the screen session you previously
+had. If you just use "screen" then a new screen will be created.
+
+*Running Tests on the Swarm
+
+In order to run tests on the swarm you need to again be connected
+to engineering or log into <username>@flip.eecs.oregonstate.edu first.
+
+Next you log into <username>@submit64.eecs.oregonstate.edu.
+
+Once logged in you need to use the bash script "submit.csh"
+this is included in the svn repository. # indicated commented
+lines while lines with #$ are special commands given to the server.
+#$ -N <job name> is the name that will show up when you call qstat.
+You also have other options such as controlling the memory you are
+allocated (This is 2 gigabyte max on the swarm) and the type
+of computer to run the job on. All uncommented lines are the
+lines you would like to be executed.
+
+In order to run tests the command "qsub" is used followed by the
+name of the bash script. In this cas it is submit.csh. To view
+currently running tests on the swarm use the command qstat.
+If you call qstat -u <username> it will show the test you
+are currently running. qdel <process id> will remove one
+of your current processes from the swarm.

@@ -12,12 +12,7 @@ import net.demilich.metastone.gui.IconFactory;
 public class MetaStone extends Application {
 
 	public static void main(String[] args) {
-		//DevCheckCardCompleteness.updateCardCatalogue();
-		// DevCheckCardCompleteness.writeImplementedCardsToFile("implemented_cards.csv");
 		launch(args);
-
-		//DevCheckCardCompleteness.assignUniqueIdToEachCard();
-		// new HearthstoneAnalyzer().launchDebugGame();
 	}
 
 	@Override

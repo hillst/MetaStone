@@ -88,8 +88,9 @@ public class ActionLogic {
 		List<GameAction> validActions = new ArrayList<GameAction>();
 		validActions.addAll(getPhysicalAttackActions(context, player));
 		validActions.addAll(getPlayCardActions(context, player));
+
 		if (context.getTurnState() != TurnState.TURN_ENDED) {
-			validActions.add(new EndTurnAction());	
+			validActions.add(new EndTurnAction());
 		}
 		
 		return validActions;

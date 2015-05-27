@@ -46,6 +46,7 @@ class Node {
 		return child;
 	}
 
+	//This should probably be independent of Node
 	public GameAction getBestAction() {
 		GameAction best = null;
 		int bestScore = Integer.MIN_VALUE;
@@ -101,10 +102,12 @@ class Node {
 		return state.gameDecided();
 	}
 
+
 	public void process(ITreePolicy treePolicy) {
 		List<Node> visited = new LinkedList<Node>();
 		Node current = this;
 		visited.add(this);
+
 		while (!current.isTerminal()) {
 			if (current.canFurtherExpanded()) {
 				current = current.expand();
@@ -130,11 +133,9 @@ class Node {
 
 		GameContext simulation = node.getState().clone();
 		for (Player player : simulation.getPlayers()) {
-			player.setBehaviour(new PlayRandomBehaviour());
+			player.setBehaviour(new PlayRandomBehaviour()); //should be the basepolicy, not necessarily play random
 		}
-
 		simulation.playTurn();
-
 		return simulation.getWinningPlayerId() == getPlayer() ? 1 : 0;
 	}
 

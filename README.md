@@ -7,5 +7,7 @@ There was an agreement between us and the owner, we are allowed to change things
 
 Essentially he has every right to include or not include what we've worked on, however we retain ownership of the code we produce.
 
-## Setup
+## TODO
+
+Still having some issues with the mass simulations, sometimes it forgets to add the END_TURN action
 

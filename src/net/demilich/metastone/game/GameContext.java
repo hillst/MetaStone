@@ -307,6 +307,30 @@ public class GameContext implements Cloneable, IDisposable {
 
 	}
 
+	/**
+	 * Takes the passed action in the current context of the game
+	 * @param action
+	 * @return If the it is still the current players turn
+	 */
+	public boolean takeAction(GameAction action) {
+		if (++actionsThisTurn > 99) {
+			logger.warn("Turn has been forcefully ended after {} actions", actionsThisTurn);
+			endTurn();
+			return false;
+		}
+		// probably assert that action is legal but whatever
+		if (action == null){
+			throw new RuntimeException("Selected null action");
+		}
+		performAction(activePlayer, action);
+		if (action.getActionType() == ActionType.END_TURN){
+			startTurn(activePlayer);
+		}
+
+		return action.getActionType() != ActionType.END_TURN;
+
+	}
+
 	public boolean playTurn() {
 		if (++actionsThisTurn > 99) {
 			logger.warn("Turn has been forcefully ended after {} actions", actionsThisTurn);
