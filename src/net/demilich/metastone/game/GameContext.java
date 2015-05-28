@@ -306,13 +306,16 @@ public class GameContext implements Cloneable, IDisposable {
 		init();
 		while (!gameDecided()) {
 			startTurn(activePlayer);
-			System.out.println("PLAYER: " + getActivePlayerId());
-			System.out.println("HP: " + getActivePlayer().getHero().getHp() );
+
+			System.out.println(this);
+			System.out.println("Starting turn.\n");
 			double starttime = System.currentTimeMillis();
 			while(playTurn());
 			if (getTurn() > GameLogic.TURN_LIMIT) {
 				break;
 			}
+			System.out.println(this);
+			System.out.println("\n");
 			double endtime = System.currentTimeMillis();
 			timePerTurn[activePlayer] += endtime - starttime;
 		}
@@ -375,9 +378,10 @@ public class GameContext implements Cloneable, IDisposable {
 			endTurn();
 			return false;
 		}
-
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
+		System.out.println("PLAYER: " + getActivePlayerId());
 		System.out.println("ACTION: " + nextAction);
+
 		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {
 			nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());

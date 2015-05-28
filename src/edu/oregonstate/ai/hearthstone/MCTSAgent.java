@@ -1,5 +1,9 @@
 package edu.oregonstate.ai.hearthstone;
 
+import edu.oregonstate.eecs.mcplan.Agent;
+import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
+import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
+import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
@@ -9,17 +13,23 @@ import net.demilich.metastone.game.cards.Card;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Hill on 5/27/15.
  */
 public class MCTSAgent extends Behaviour {
-    private UctAgent agent;
-    private int nSimulations;
+    private Agent agent;
+    private int nMonkies;
     private double uctConstant;
+    private Behaviour baseBehaviour;
+
+
+
 
     public MCTSAgent(int nSimulations ,double uctConstant){
-        this.nSimulations = nSimulations;
+        this.nMonkies = nSimulations;
         this.uctConstant = uctConstant;
         UctAgent agent = new UctAgent(nSimulations, uctConstant);
         this.agent = agent;
@@ -41,5 +51,13 @@ public class MCTSAgent extends Behaviour {
         HearthstoneState triggerState = new HearthstoneState(context);
         triggerState.setLegalActions(validActions);
         return (GameAction) this.agent.selectAction(triggerState, new HearthstoneSimulator(context));
+    }
+
+    public void setAgent(Agent agent){
+        this.agent = agent;
+    }
+
+    public Agent getBasePolicy(){
+        return this.agent;
     }
 }

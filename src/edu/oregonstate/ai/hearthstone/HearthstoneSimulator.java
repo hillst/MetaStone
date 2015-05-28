@@ -4,6 +4,8 @@ import edu.oregonstate.eecs.mcplan.Simulator;
 import edu.oregonstate.eecs.mcplan.State;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.actions.GameAction;
+import net.demilich.metastone.game.behaviour.Behaviour;
+import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
 
 import java.util.List;
 
@@ -20,18 +22,28 @@ public class HearthstoneSimulator extends Simulator {
         this.setInitialState();
         this.rewards_ = new int[2];
     }
-
     /**
      * Given a state we already have setup the simulator
      * @param context
      */
     public HearthstoneSimulator(GameContext context){
+
+        GameContext newContext = context.clone();
+        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")){
+            newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
+        }
+        this.state = new HearthstoneState(newContext);
         this.state = new HearthstoneState(context.clone());
         this.rewards_ = new int[2];
     }
 
     public HearthstoneSimulator(GameContext context, int[] rewards){
-        this.state = new HearthstoneState(context.clone());
+        GameContext newContext = context.clone();
+        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")){
+            newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
+        }
+        this.state = new HearthstoneState(newContext);
+
         for (int i =0; i< rewards.length; i++)
             this.rewards_[i] = rewards[i];
     }
@@ -85,9 +97,7 @@ public class HearthstoneSimulator extends Simulator {
 
     @Override
     public void takeAction(Object o) {
-
         GameAction action = (GameAction) o;
-
         this.state.takeAction(action);
         this.computeRewards();
     }

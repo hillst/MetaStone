@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.ai.hearthstone.MCTSAgent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -164,6 +165,9 @@ public class PlayerConfigView extends VBox {
 		}
 
 		behaviourList.add(new PlayRandomBehaviour());
+
+		behaviourList.add(new MCTSAgent(10, 1));
+
 
 		behaviourList.add(new GreedyOptimizeMove(new WeightedHeuristic()));
 		behaviourList.add(new NoAggressionBehaviour());
