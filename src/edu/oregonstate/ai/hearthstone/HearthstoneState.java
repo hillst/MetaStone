@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class HearthstoneState implements State {
     private GameContext gameContext;
+    private List<GameAction> legalActions;
 
 
     public HearthstoneState(GameContext context) {
@@ -24,7 +25,8 @@ public class HearthstoneState implements State {
 
     public int getWinningPlayerId(){
         return this.gameContext.getWinningPlayerId();
-    }
+
+       }
     public void takeAction(GameAction a){
         this.gameContext.takeAction(a);
     }
@@ -45,7 +47,14 @@ public class HearthstoneState implements State {
         return this.gameContext.toString();
     }
 
+    public void setLegalActions(List<GameAction> legalActions){
+        this.legalActions = legalActions;
+    }
+
     public List<GameAction> getLegalActions(){
+        if (this.legalActions != null){
+            return this.legalActions;
+        }
         return this.gameContext.getValidActions();
     }
 

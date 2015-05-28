@@ -121,7 +121,12 @@ public class GameLogic implements Cloneable {
 	public void afterCardPlayed(int playerId, CardReference cardReference) {
 		Player player = context.getPlayer(playerId);
 		player.getHero().modifyTag(GameTag.COMBO, +1);
+
 		Card card = context.resolveCardReference(cardReference);
+		if (card == null){
+
+			System.out.println (":(");
+		}
 		if (card.getCardType() == CardType.SPELL && !card.hasStatus(GameTag.COUNTERED)) {
 			context.fireGameEvent(new AfterSpellCastedEvent(context, playerId, card));
 		}
@@ -1048,7 +1053,6 @@ public class GameLogic implements Cloneable {
 		if (!battlecry.canBeExecuted(context, player)) {
 			return;
 		}
-
 		GameAction battlecryAction = null;
 		battlecry.setSource(actor.getReference());
 		if (battlecry.getTargetRequirement() != TargetSelection.NONE) {

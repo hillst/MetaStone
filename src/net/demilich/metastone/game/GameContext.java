@@ -27,6 +27,8 @@ import net.demilich.metastone.utils.IDisposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
 public class GameContext implements Cloneable, IDisposable {
 	public static final int PLAYER_1 = 0;
 	public static final int PLAYER_2 = 1;
@@ -72,7 +74,12 @@ public class GameContext implements Cloneable, IDisposable {
 	}
 
 	@Override
-	public GameContext clone() {
+	public GameContext clone(){
+		try {
+			super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 		GameLogic logicClone = getLogic().clone();
 		Player player1Clone = getPlayer1().clone();
 		// player1Clone.getDeck().shuffle();
@@ -288,21 +295,31 @@ public class GameContext implements Cloneable, IDisposable {
 	protected void onGameStateChanged() {
 	}
 
-	private void performAction(int playerId, GameAction gameAction) {
+	public void performAction(int playerId, GameAction gameAction) {
 		logic.performGameAction(playerId, gameAction);
 		onGameStateChanged();
 	}
 
 	public void play() {
 		logger.debug("Game starts: " + getPlayer1().getName() + " VS. " + getPlayer2().getName());
+		double[] timePerTurn = {0,0};
 		init();
 		while (!gameDecided()) {
 			startTurn(activePlayer);
+			System.out.println("PLAYER: " + getActivePlayerId());
+			System.out.println("HP: " + getActivePlayer().getHero().getHp() );
+			double starttime = System.currentTimeMillis();
 			while(playTurn());
 			if (getTurn() > GameLogic.TURN_LIMIT) {
 				break;
 			}
+			double endtime = System.currentTimeMillis();
+			timePerTurn[activePlayer] += endtime - starttime;
 		}
+		//these are off by one because of how active player works lol
+		System.out.println("Player 1 time per turn (ms): " + timePerTurn[1]/ this.turn);
+		System.out.println("Player 2 time per turn (ms): "+ timePerTurn[0]/ this.turn);
+
 		endGame();
 
 	}
@@ -313,14 +330,28 @@ public class GameContext implements Cloneable, IDisposable {
 	 * @return If the it is still the current players turn
 	 */
 	public boolean takeAction(GameAction action) {
+		//maybe handle this outside?
+		if (gameDecided()){
+			endGame();
+			return false;
+		}
+		//don't do this unless the player has changed?
+
 		if (++actionsThisTurn > 99) {
 			logger.warn("Turn has been forcefully ended after {} actions", actionsThisTurn);
 			endTurn();
+			startTurn(activePlayer);
+
 			return false;
 		}
 		// probably assert that action is legal but whatever
 		if (action == null){
 			throw new RuntimeException("Selected null action");
+		}
+		if (this.getValidActions().size() == 0) {
+			endTurn();
+			startTurn(activePlayer);
+			return false;
 		}
 		performAction(activePlayer, action);
 		if (action.getActionType() == ActionType.END_TURN){
@@ -338,6 +369,7 @@ public class GameContext implements Cloneable, IDisposable {
 			return false;
 		}
 
+
 		List<GameAction> validActions = getValidActions();
 		if (validActions.size() == 0) {
 			endTurn();
@@ -345,6 +377,8 @@ public class GameContext implements Cloneable, IDisposable {
 		}
 
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
+		System.out.println("ACTION: " + nextAction);
+		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {
 			nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
 		}

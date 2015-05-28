@@ -44,7 +44,7 @@ public class HearthstoneSimulator extends Simulator {
         }
     }
 
-        @Override
+    @Override
     public Simulator copy() {
         HearthstoneSimulator sim = new HearthstoneSimulator();
         sim.setState(this.state.copy());
@@ -80,12 +80,14 @@ public class HearthstoneSimulator extends Simulator {
 
     @Override
     public void setState(State state, List list) {
-
+        this.state = (HearthstoneState) state;
     }
 
     @Override
     public void takeAction(Object o) {
+
         GameAction action = (GameAction) o;
+
         this.state.takeAction(action);
         this.computeRewards();
     }
