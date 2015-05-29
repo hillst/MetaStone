@@ -59,14 +59,14 @@ public class HearthstoneArbiter {
         //static deck makes debugging easier
         Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
 
-        int nMonkies = 10;
+        int nMonkies = 20;
         int uctConstant = 1;
         //Agent base = new RandomAgent();
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         Agent base = new UctAgent(nMonkies, uctConstant);
         //TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
-        Agent agent = new ThreadedPolicyRolloutAgent(base, 1, -1, executor);
+        Agent agent = new PolicyRollout(base, 1, -1);
         PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, base));
         //PlayerConfig pc = new PlayerConfig(new RandomDeck(HeroClass.HUNTER), new PlayRandomBehaviour());
 
