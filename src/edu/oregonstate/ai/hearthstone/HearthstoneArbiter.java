@@ -1,6 +1,9 @@
 package edu.oregonstate.ai.hearthstone;
 
+import edu.oregonstate.eecs.mcplan.Agent;
+import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
+import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
@@ -10,6 +13,9 @@ import net.demilich.metastone.game.decks.Deck;
 import net.demilich.metastone.game.logic.GameLogic;
 import net.demilich.metastone.gui.deckbuilder.importer.HearthPwnImporter;
 import net.demilich.metastone.gui.gameconfig.PlayerConfig;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Hill on 5/27/15.
@@ -55,8 +61,13 @@ public class HearthstoneArbiter {
 
         int nMonkies = 10;
         int uctConstant = 1;
-        UctAgent agent = new UctAgent(nMonkies, uctConstant);
-        PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, new RandomAgent()));
+        //Agent base = new RandomAgent();
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        Agent base = new UctAgent(nMonkies, uctConstant);
+        //TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
+        Agent agent = new ThreadedPolicyRolloutAgent(base, 1, -1, executor);
+        PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, base));
         //PlayerConfig pc = new PlayerConfig(new RandomDeck(HeroClass.HUNTER), new PlayRandomBehaviour());
 
         pc.setName("Player 1");

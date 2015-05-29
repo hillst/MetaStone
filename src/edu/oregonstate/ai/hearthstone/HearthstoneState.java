@@ -4,6 +4,7 @@ import edu.oregonstate.eecs.mcplan.State;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.actions.GameAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,6 +19,11 @@ public class HearthstoneState implements State {
     public HearthstoneState(GameContext context) {
         this.gameContext = context;
     }
+    public HearthstoneState(GameContext context, List<GameAction> legalActions) {
+        this.gameContext = context;
+        this.legalActions = legalActions;
+    }
+
 
     public HearthstoneState copy() {
         return new HearthstoneState(this.gameContext.clone());
@@ -64,6 +70,10 @@ public class HearthstoneState implements State {
      */
     public boolean getTerminal() {
         return this.gameContext.gameDecided();
+    }
+
+    public GameContext getContext(){
+        return this.gameContext;
     }
 }
 

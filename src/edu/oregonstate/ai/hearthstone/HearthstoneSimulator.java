@@ -23,18 +23,41 @@ public class HearthstoneSimulator extends Simulator {
         this.setInitialState();
         this.rewards_ = new int[2];
     }
+
+    /**
+     * This is called by our copy function, since we are cloned do our policy swap
+     *
+     * Policy swap is such a hack.
+     *
+     *
+     * @param state
+     */
+    public HearthstoneSimulator(HearthstoneState state, int[] rewards){
+        GameContext context = state.getContext();
+        ((MCTSAgent)context.getPlayer1().getBehaviour()).policySwap();
+
+        if (!context.getPlayer2().getBehaviour().getName().equals("Play Random")) {
+            context.getPlayer2().setBehaviour(new PlayRandomBehaviour());
+        }
+        this.state = state;
+        this.rewards_ = new int[2];
+
+        for (int i =0; i< rewards.length; i++)
+            this.rewards_[i] = rewards[i];
+    }
     /**
      * Operates with the assumption that player1 is the MCTS player and that the second player should be treated as
      * random for the rest of the simulation.
+     *
+     * Such a hack
      *
      * @param context
      */
     public HearthstoneSimulator(GameContext context){
 
         GameContext newContext = context.clone();
+        ((MCTSAgent)newContext.getPlayer1().getBehaviour()).policySwap();
 
-        Agent base = ((MCTSAgent)context.getPlayer1().getBehaviour()).getBasePolicy();
-        ((MCTSAgent)newContext.getPlayer1().getBehaviour()).setPolicy(base);
 
         if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")) {
             newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
@@ -45,6 +68,7 @@ public class HearthstoneSimulator extends Simulator {
 
     public HearthstoneSimulator(GameContext context, int[] rewards){
         this(context);
+        this.rewards_ = new int[2];
         for (int i =0; i< rewards.length; i++)
             this.rewards_[i] = rewards[i];
     }
@@ -59,8 +83,8 @@ public class HearthstoneSimulator extends Simulator {
 
     @Override
     public Simulator copy() {
-        HearthstoneSimulator sim = new HearthstoneSimulator();
-        sim.setState(this.state.copy());
+        HearthstoneSimulator sim = new HearthstoneSimulator(state.copy(), this.rewards_);
+
         return sim;
     }
 

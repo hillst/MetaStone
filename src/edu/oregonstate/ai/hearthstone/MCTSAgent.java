@@ -54,8 +54,18 @@ public class MCTSAgent extends Behaviour {
     public Agent getPolicy(){
         return this.policy;
     }
+
     public void setPolicy(Agent policy){
         this.policy = policy;
+
+    }
+
+    /**
+     * only allows for one level of agent layering but taht should be okay.
+     */
+    public void policySwap(){
+        this.policy = this.basePolicy;
+        this.basePolicy = new RandomAgent();
     }
 
     @Override
