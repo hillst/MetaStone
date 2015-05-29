@@ -1,5 +1,6 @@
 package net.demilich.metastone.game.behaviour;
 
+import edu.oregonstate.eecs.mcplan.Agent;
 import net.demilich.metastone.game.GameContext;
 
 public abstract class Behaviour implements IBehaviour {
@@ -17,6 +18,9 @@ public abstract class Behaviour implements IBehaviour {
 	public void onGameOver(GameContext context, int playerId, int winningPlayerId) {
 	}
 
-
+	@Override
+	public Agent getBasePolicy(){
+		return null;
+	}
 
 }

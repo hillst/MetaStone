@@ -1,5 +1,6 @@
 package edu.oregonstate.ai.hearthstone;
 
+import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.Simulator;
 import edu.oregonstate.eecs.mcplan.State;
 import net.demilich.metastone.game.GameContext;
@@ -23,27 +24,27 @@ public class HearthstoneSimulator extends Simulator {
         this.rewards_ = new int[2];
     }
     /**
-     * Given a state we already have setup the simulator
+     * Operates with the assumption that player1 is the MCTS player and that the second player should be treated as
+     * random for the rest of the simulation.
+     *
      * @param context
      */
     public HearthstoneSimulator(GameContext context){
 
         GameContext newContext = context.clone();
-        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")){
+
+        Agent base = ((MCTSAgent)context.getPlayer1().getBehaviour()).getBasePolicy();
+        ((MCTSAgent)newContext.getPlayer1().getBehaviour()).setPolicy(base);
+
+        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")) {
             newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
         }
         this.state = new HearthstoneState(newContext);
-        this.state = new HearthstoneState(context.clone());
         this.rewards_ = new int[2];
     }
 
     public HearthstoneSimulator(GameContext context, int[] rewards){
-        GameContext newContext = context.clone();
-        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")){
-            newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
-        }
-        this.state = new HearthstoneState(newContext);
-
+        this(context);
         for (int i =0; i< rewards.length; i++)
             this.rewards_[i] = rewards[i];
     }

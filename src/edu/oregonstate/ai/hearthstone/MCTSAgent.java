@@ -20,19 +20,17 @@ import java.util.concurrent.Executors;
  * Created by Hill on 5/27/15.
  */
 public class MCTSAgent extends Behaviour {
-    private Agent agent;
-    private int nMonkies;
-    private double uctConstant;
-    private Behaviour baseBehaviour;
+    private Agent policy;
+    private Agent basePolicy;
 
+    public MCTSAgent(Agent policy, Agent basePolicy){
+        this.policy = policy;
+        this.basePolicy = basePolicy;
+    }
 
-
-
-    public MCTSAgent(int nSimulations ,double uctConstant){
-        this.nMonkies = nSimulations;
-        this.uctConstant = uctConstant;
-        UctAgent agent = new UctAgent(nSimulations, uctConstant);
-        this.agent = agent;
+    @Override
+    public MCTSAgent clone(){
+        return new MCTSAgent(this.policy, this.basePolicy);
     }
 
     @Override
@@ -50,14 +48,18 @@ public class MCTSAgent extends Behaviour {
     public GameAction requestAction(GameContext context, Player player, List<GameAction> validActions) {
         HearthstoneState triggerState = new HearthstoneState(context);
         triggerState.setLegalActions(validActions);
-        return (GameAction) this.agent.selectAction(triggerState, new HearthstoneSimulator(context));
+        return (GameAction) this.policy.selectAction(triggerState, new HearthstoneSimulator(context));
     }
 
-    public void setAgent(Agent agent){
-        this.agent = agent;
+    public Agent getPolicy(){
+        return this.policy;
+    }
+    public void setPolicy(Agent policy){
+        this.policy = policy;
     }
 
+    @Override
     public Agent getBasePolicy(){
-        return this.agent;
+        return this.basePolicy;
     }
 }

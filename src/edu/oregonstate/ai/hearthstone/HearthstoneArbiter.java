@@ -1,5 +1,6 @@
 package edu.oregonstate.ai.hearthstone;
 
+import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
@@ -49,14 +50,13 @@ public class HearthstoneArbiter {
     }
 
     public static void uctVRandom(){
-        int nSims = 10;
-        //this says do n samples per action, we might wanna create some way to sample statistics
-        //something like, how many actions are available, how much tiem do we have, okay go... etc.
-        double uctConstant = 1;
-
         //static deck makes debugging easier
         Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
-        PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(nSims, uctConstant));
+
+        int nMonkies = 10;
+        int uctConstant = 1;
+        UctAgent agent = new UctAgent(nMonkies, uctConstant);
+        PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, new RandomAgent()));
         //PlayerConfig pc = new PlayerConfig(new RandomDeck(HeroClass.HUNTER), new PlayRandomBehaviour());
 
         pc.setName("Player 1");

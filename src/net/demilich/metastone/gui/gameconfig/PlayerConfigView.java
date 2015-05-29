@@ -166,7 +166,7 @@ public class PlayerConfigView extends VBox {
 
 		behaviourList.add(new PlayRandomBehaviour());
 
-		behaviourList.add(new MCTSAgent(10, 1));
+		//behaviourList.add(new MCTSAgent(10, 1));
 
 
 		behaviourList.add(new GreedyOptimizeMove(new WeightedHeuristic()));
