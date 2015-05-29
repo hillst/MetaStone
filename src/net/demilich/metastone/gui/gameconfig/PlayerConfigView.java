@@ -7,6 +7,7 @@ import java.util.List;
 import edu.oregonstate.ai.hearthstone.MCTSAgent;
 import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
+import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import javafx.beans.value.ChangeListener;
@@ -169,9 +170,9 @@ public class PlayerConfigView extends VBox {
 		}
 
 		behaviourList.add(new PlayRandomBehaviour());
-		Agent base = new UctAgent(10, 1.5);
+		Agent base = new RandomAgent();
+		Agent agent = new UctAgent(10000, 1);
 		//TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
-		Agent agent = new PolicyRollout(base, 4, -1);
 		behaviourList.add(new MCTSAgent(agent, base));
 
 
