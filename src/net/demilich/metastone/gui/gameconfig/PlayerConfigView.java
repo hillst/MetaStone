@@ -8,7 +8,6 @@ import edu.oregonstate.ai.hearthstone.MCTSAgent;
 import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
-import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

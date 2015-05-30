@@ -3,7 +3,6 @@ package edu.oregonstate.ai.hearthstone;
 import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
-import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
@@ -24,10 +23,13 @@ public class HearthstoneArbiter {
 
     public static void main(String dicks[]){
         //simsPSecond();
-        uctVRandom();
+        //int nMonkies = Integer.parseInt(dicks[0]);
+        uctVRandom(1);
 
     }
+
     public static void simsPSecond(){
+        Deck handlock = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update");
         Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
 
         PlayerConfig pc = new PlayerConfig(zoo, new PlayRandomBehaviour());
@@ -55,11 +57,13 @@ public class HearthstoneArbiter {
 
     }
 
-    public static void uctVRandom(){
+    public static void uctVRandom(int nMonkies){
         //static deck makes debugging easier
-        Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
+        System.out.println("start loading");
 
-        int nMonkies = 10000;
+        Deck handlock = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update");
+
+        Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
         double uctConstant = 1;
         //Agent base = new RandomAgent();
         ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -69,7 +73,7 @@ public class HearthstoneArbiter {
 
         //TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
         //Agent agent = new PolicyRollout(base, 1, -1);
-        PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, base));
+        PlayerConfig pc = new PlayerConfig(handlock, new MCTSAgent(agent, base));
         //PlayerConfig pc = new PlayerConfig(new RandomDeck(HeroClass.HUNTER), new PlayRandomBehaviour());
 
         pc.setName("Player 1");
