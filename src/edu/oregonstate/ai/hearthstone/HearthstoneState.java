@@ -18,7 +18,9 @@ public class HearthstoneState implements State {
 
     public HearthstoneState(GameContext context) {
         this.gameContext = context;
+        //this.legalActions = context.getValidActions();
     }
+
     public HearthstoneState(GameContext context, List<GameAction> legalActions) {
         this.gameContext = context;
         this.legalActions = legalActions;
@@ -26,7 +28,17 @@ public class HearthstoneState implements State {
 
 
     public HearthstoneState copy() {
+        if (this.getLegalActions() != gameContext.getValidActions()){
+            //System.out.println("");
+            //System.out.println("What we think" + this.getLegalActions());
+            //System.out.println("Before clone" + this.gameContext.getValidActions());
+            //System.out.println("AFTER CLONE" + this.gameContext.clone().getValidActions());
+            //return new HearthstoneState(this.gameContext.clone(), this.getLegalActions());
+        } else{
+            return new HearthstoneState(this.gameContext.clone());
+        }
         return new HearthstoneState(this.gameContext.clone());
+
     }
 
     public int getWinningPlayerId(){
@@ -60,8 +72,9 @@ public class HearthstoneState implements State {
     public List<GameAction> getLegalActions(){
         if (this.legalActions != null){
             return this.legalActions;
+        } else{
+            return this.gameContext.getValidActions();
         }
-        return this.gameContext.getValidActions();
     }
 
     /**

@@ -73,11 +73,28 @@ public class HearthstoneSimulator extends Simulator {
             this.rewards_[i] = rewards[i];
     }
 
+    /**
+     * Gives one point for winning the game and 0 for anything else, should probaly give points for losing.
+     *
+     * It's possible that these should be parameters.
+     */
     private void computeRewards() {
         if (this.isTerminalState()){
             int winner = this.state.getWinningPlayerId();
-            if (winner > -1)
-                rewards_[winner]++;
+            int loser;
+            if (winner > -1) {
+                if (winner == 0){
+                    loser = 1;
+                } else{
+                    loser = 0;
+                }
+                rewards_[winner] += 5;
+                rewards_[loser] -= 1;
+            }
+
+        } else{
+            //rewards_[this.state.getAgentTurn()]--;
+
         }
     }
 
@@ -116,8 +133,10 @@ public class HearthstoneSimulator extends Simulator {
     }
 
     @Override
-    public void setState(State state, List list) {
-        this.state = (HearthstoneState) state;
+    public void setState(State state, List legalActions) {
+        //this.state = (HearthstoneState) state;
+        //this doesn't make any sense.
+        this.state.setLegalActions(legalActions);
     }
 
     @Override

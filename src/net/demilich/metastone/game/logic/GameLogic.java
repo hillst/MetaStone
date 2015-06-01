@@ -1067,7 +1067,27 @@ public class GameLogic implements Cloneable {
 				targetedBattlecry.setTarget(validTarget);
 				battlecryActions.add(targetedBattlecry);
 			}
-
+			/**
+			 * TODO we need a workaround or to refactor this
+			 *
+			 * Here is what happens,
+			 * this asks the player for an action to battlecry (probably shouldn't happen here)
+			 * The agent copies the context
+			 * battlecry action no longer refers to that context
+			 * Null pointer
+			 *
+			 * I guess it isn't 100% clear why this happens, because in all of the other rollouts this works fine...
+			 * maybe because it's going clone take action rollout? I need to think about this a bit harder and see
+			 * EXACTLY what it's doing before we get a null pointer.
+			 *
+			 * One thing is clear, the game logic is fucking things up.
+			 *
+			 * Another option which would work (but is admittadly terrible) is to check behavior type, if it's MCTS choose
+			 * a random action instead of doing all this crazy shit. That would technically work but it would take a
+			 * big part away from the game.
+			 */
+			//System.out.println(context.getValidActions());
+			//System.out.println(battlecryActions);
 			battlecryAction = player.getBehaviour().requestAction(context, player, battlecryActions);
 		} else {
 			battlecryAction = battlecry;

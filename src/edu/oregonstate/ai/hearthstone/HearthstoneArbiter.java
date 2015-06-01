@@ -1,7 +1,7 @@
 package edu.oregonstate.ai.hearthstone;
 
 import edu.oregonstate.eecs.mcplan.Agent;
-import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
+import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
@@ -23,6 +23,7 @@ import net.demilich.metastone.gui.gameconfig.PlayerConfig;
 import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Hill on 5/27/15.
@@ -33,7 +34,7 @@ public class HearthstoneArbiter {
         //simsPSecond();
         //int nMonkies = Integer.parseInt(dicks[0]);
         try {
-            uctVRandom(10000);
+            uctVRandom(100);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -85,8 +86,9 @@ public class HearthstoneArbiter {
         //Agent base = new RandomAgent();
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
-        Agent base = new RandomAgent();
-        Agent agent = new UctAgent(nMonkies, uctConstant);
+        //Agent base = new RandomAgent();
+        Agent base = new UctAgent(nMonkies, uctConstant);
+        Agent agent = new ThreadedPolicyRolloutAgent(base, 1, -1, executor);
         // This is just a useful agent, same as what the gui has.
         //new GreedyOptimizeMove(new WeightedHeuristic());
 
