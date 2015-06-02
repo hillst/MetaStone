@@ -1,11 +1,9 @@
 package edu.oregonstate.ai.hearthstone;
 
-import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.Simulator;
 import edu.oregonstate.eecs.mcplan.State;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.actions.GameAction;
-import net.demilich.metastone.game.behaviour.Behaviour;
 import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
 
 import java.util.List;
@@ -134,9 +132,7 @@ public class HearthstoneSimulator extends Simulator {
 
     @Override
     public void setState(State state, List legalActions) {
-        //this.state = (HearthstoneState) state;
-        //this doesn't make any sense.
-        this.state.setLegalActions(legalActions);
+        this.state = (HearthstoneState) state;
     }
 
     @Override

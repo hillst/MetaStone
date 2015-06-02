@@ -84,7 +84,7 @@ public class HearthstoneArbiter {
 
         double uctConstant = 1;
         //Agent base = new RandomAgent();
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
 
         //Agent base = new RandomAgent();
         Agent base = new UctAgent(nMonkies, uctConstant);

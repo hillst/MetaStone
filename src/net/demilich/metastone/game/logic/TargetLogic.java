@@ -100,7 +100,8 @@ public class TargetLogic {
 
 		logger.error("Id " + targetId + " not found!");
 		logger.error(context.toString());
-		throw new RuntimeException("Target not found exception: " + targetKey);
+		return null;
+		//throw new RuntimeException("Target not found exception: " + targetKey);
 	}
 
 	private Entity findInCards(Player player, int targetId) {
