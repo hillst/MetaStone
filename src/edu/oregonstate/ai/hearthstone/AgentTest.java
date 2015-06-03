@@ -1,15 +1,12 @@
 package edu.oregonstate.ai.hearthstone;
 
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
+import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
-import net.demilich.metastone.game.behaviour.GreedyOptimizeMove;
 import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
-import net.demilich.metastone.game.behaviour.mcts.MonteCarloTreeSearch;
 import net.demilich.metastone.game.behaviour.value.ActionValueBehaviour;
 import net.demilich.metastone.game.decks.Deck;
-import net.demilich.metastone.game.decks.RandomDeck;
-import net.demilich.metastone.game.entities.heroes.HeroClass;
 import net.demilich.metastone.game.logic.GameLogic;
 import net.demilich.metastone.gui.deckbuilder.importer.HearthPwnImporter;
 import net.demilich.metastone.gui.gameconfig.PlayerConfig;
@@ -20,21 +17,25 @@ import net.demilich.metastone.gui.gameconfig.PlayerConfig;
 public class AgentTest {
 
     public static void main(String args[]) {
+        System.out.println("Starting...");
         Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
         Deck rogue = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue");
         Deck shaman = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy");
         System.out.println("Zoo:");
         random_random(zoo);
         random_heuristic(zoo);
-        random_uct(zoo);
+        uct_random(zoo);
+        uct_heuristic(zoo);
         System.out.println("Rogue:");
         random_random(rogue);
         random_heuristic(rogue);
-        random_uct(rogue);
+        uct_random(rogue);
+        uct_heuristic(rogue);
         System.out.println("Shaman:");
         random_random(shaman);
         random_heuristic(shaman);
-        random_uct(shaman);
+        uct_random(shaman);
+        uct_heuristic(shaman);
     }
 
     public static void random_random(Deck deck) {
@@ -53,12 +54,21 @@ public class AgentTest {
         randomTest.getResult().printResult();
     }
 
-    public static void random_uct(Deck deck) {
+    public static void uct_random(Deck deck) {
         PlayerConfig randomPlayer = new PlayerConfig(deck, new PlayRandomBehaviour());
-        PlayerConfig uctPlayer = new PlayerConfig(deck, new MCTSAgent(5, 1));
+        PlayerConfig uctPlayer = new PlayerConfig(deck, new MCTSAgent(new UctAgent(100, 1.0), new RandomAgent()));
         randomPlayer.setName("Random");
         uctPlayer.setName("UCT");
-        AgentTest randomTest = new AgentTest(randomPlayer, uctPlayer, 50);
+        AgentTest randomTest = new AgentTest(uctPlayer, randomPlayer, 10);
+        randomTest.getResult().printResult();
+    }
+
+    public static void uct_heuristic(Deck deck) {
+        PlayerConfig uctPlayer = new PlayerConfig(deck, new MCTSAgent(new UctAgent(100, 1.0), new RandomAgent()));
+        PlayerConfig greedyPlayer = new PlayerConfig(deck, new ActionValueBehaviour());
+        uctPlayer.setName("UCT");
+        greedyPlayer.setName("Greedy");
+        AgentTest randomTest = new AgentTest(uctPlayer, greedyPlayer, 10);
         randomTest.getResult().printResult();
     }
 
@@ -108,6 +118,7 @@ public class AgentTest {
         }
 
         public void printResult() {
+            System.out.println("Result:");
             for (int i = 0; i < 2; i++) {
                 System.out.print(names[i]);
                 System.out.print(": ");

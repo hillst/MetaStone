@@ -77,7 +77,7 @@ public class ValueApproximator implements IValueApproximator {
 			break;
 		
 		}
-		logger.warn("Unable to approximate value for action {}", action);
+		//logger.warn("Unable to approximate value for action {}", action);
 		return 0;
 	}
 

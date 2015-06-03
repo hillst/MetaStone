@@ -315,8 +315,8 @@ public class GameContext implements Cloneable, IDisposable {
 			if (getTurn() > GameLogic.TURN_LIMIT) {
 				break;
 			}
-			System.out.println(this);
-			System.out.println("\n");
+			//System.out.println(this);
+			//System.out.println("\n");
 			double endtime = System.currentTimeMillis();
 			timePerTurn[activePlayer] += endtime - starttime;
 		}
