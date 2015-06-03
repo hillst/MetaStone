@@ -64,6 +64,18 @@ public class HearthstoneSimulator extends Simulator {
         this.rewards_ = new int[2];
     }
 
+    public HearthstoneSimulator(GameContext context, HearthstoneState state){
+        GameContext newContext = context.clone();
+        ((MCTSAgent)newContext.getPlayer1().getBehaviour()).policySwap();
+
+
+        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")) {
+            newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
+        }
+        this.state = state;
+        this.rewards_ = new int[2];
+    }
+
     public HearthstoneSimulator(GameContext context, int[] rewards){
         this(context);
         this.rewards_ = new int[2];
@@ -86,20 +98,15 @@ public class HearthstoneSimulator extends Simulator {
                 } else{
                     loser = 0;
                 }
-                rewards_[winner] += 5;
+                rewards_[winner] += 1;
                 rewards_[loser] -= 1;
             }
-
-        } else{
-            //rewards_[this.state.getAgentTurn()]--;
-
         }
     }
 
     @Override
     public Simulator copy() {
         HearthstoneSimulator sim = new HearthstoneSimulator(state.copy(), this.rewards_);
-
         return sim;
     }
 
@@ -133,12 +140,18 @@ public class HearthstoneSimulator extends Simulator {
     @Override
     public void setState(State state, List legalActions) {
         this.state = (HearthstoneState) state;
+        this.state.setLegalActions(legalActions);
     }
 
     @Override
     public void takeAction(Object o) {
+
         GameAction action = (GameAction) o;
+        if (!this.state.getLegalActions().contains(action)){
+
+        }
         this.state.takeAction(action);
+        this.state.setLegalActions(this.state.getContext().getValidActions());
         this.computeRewards();
     }
 

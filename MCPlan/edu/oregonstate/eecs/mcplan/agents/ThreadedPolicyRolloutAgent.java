@@ -147,6 +147,7 @@ public class ThreadedPolicyRolloutAgent extends Agent {
                     k = -2;
                 if (k >= height_)
                     break;
+                // whoa this could be the problem
                 Object action = basePi_.selectAction(simulator.getState(), simulator.copy());
                 simulator.takeAction(action);
                 reward += simulator.getReward(policyID);

@@ -220,6 +220,9 @@ public class GameLogic implements Cloneable {
 		// note: this code block is basically exclusively for the SpellBender
 		// Secret, but it can easily be expanded if targets of area of effect
 		// spell should be changeable as well
+        if (source == null){
+            return;
+        }
 		Card sourceCard = source.getEntityType() == EntityType.CARD ? (Card) source : null;
 		if (sourceCard != null && sourceCard.getCardType() == CardType.SPELL && !spellDesc.hasPredefinedTarget() && targets != null
 				&& targets.size() == 1) {
@@ -248,11 +251,6 @@ public class GameLogic implements Cloneable {
 			if (pendingCard instanceof SpellCard) {
 				spellCard = (SpellCard) pendingCard;
 			}
-			logger.error("Error while playing card: " + spellCard);
-			logger.error("Error while casting spell: " + spellDesc);
-			logger.error("LastSpell: " + lastSpell);
-			logger.error("Exception while casting spell", e);
-			e.printStackTrace();
 		}
 
 		if (spellCard != null) {

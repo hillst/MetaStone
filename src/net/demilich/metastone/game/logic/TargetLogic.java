@@ -1,6 +1,7 @@
 package net.demilich.metastone.game.logic;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 
 import net.demilich.metastone.game.Environment;
@@ -16,6 +17,7 @@ import net.demilich.metastone.game.entities.minions.Minion;
 import net.demilich.metastone.game.targeting.EntityReference;
 import net.demilich.metastone.game.targeting.TargetSelection;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,8 +100,6 @@ public class TargetLogic {
 			return cardResult;
 		}
 
-		logger.error("Id " + targetId + " not found!");
-		logger.error(context.toString());
 		return null;
 		//throw new RuntimeException("Target not found exception: " + targetKey);
 	}
@@ -129,10 +129,14 @@ public class TargetLogic {
 			return pendingCard;
 		}
 		if (!context.getSummonStack().isEmpty()) {
-			Minion summonedMinion = context.getSummonStack().peek();
-			if (summonedMinion.getId() == targetId) {
-				return summonedMinion;
-			}
+            try {
+                Minion summonedMinion = context.getSummonStack().peek();
+                if (summonedMinion.getId() == targetId) {
+                    return summonedMinion;
+                }
+            } catch(EmptyStackException e){
+                return null;
+            }
 		}
 		if (context.getEnvironment().containsKey(Environment.SUMMONED_WEAPON)) {
 			Actor summonedWeapon = (Actor) context.getEnvironment().get(Environment.SUMMONED_WEAPON);
@@ -201,9 +205,10 @@ public class TargetLogic {
 	}
 
 	public List<Entity> resolveTargetKey(GameContext context, Player player, Entity source, EntityReference targetKey) {
-		if (targetKey == null) {
+		if (targetKey == null || source == null || source.getReference() == null) {
 			return null;
 		}
+
 		if (targetKey == EntityReference.ALL_CHARACTERS) {
 			return getEntities(context, player, TargetSelection.ANY);
 		} else if (targetKey == EntityReference.ALL_MINIONS) {
@@ -229,7 +234,11 @@ public class TargetLogic {
 			targets.remove(source);
 			return targets;
 		} else if (targetKey == EntityReference.ADJACENT_MINIONS) {
-			return new ArrayList<>(context.getAdjacentMinions(player, source.getReference()));
+            try {
+                return new ArrayList<>(context.getAdjacentMinions(player, source.getReference()));
+            } catch(NullPointerException e){
+                return null;
+            }
 		} else if (targetKey == EntityReference.SELF) {
 			return singleTargetAsList(source);
 		} else if (targetKey == EntityReference.EVENT_TARGET) {

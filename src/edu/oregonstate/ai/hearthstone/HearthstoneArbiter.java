@@ -3,6 +3,7 @@ package edu.oregonstate.ai.hearthstone;
 import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
+import edu.oregonstate.eecs.mcplan.agents.ThreadedUctAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
@@ -34,7 +35,7 @@ public class HearthstoneArbiter {
         //simsPSecond();
         //int nMonkies = Integer.parseInt(dicks[0]);
         try {
-            uctVRandom(100);
+            uctVRandom(40000);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -80,15 +81,13 @@ public class HearthstoneArbiter {
         Deck zoo = metaDeck.getDecks().get(3);
         Deck handlock = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update");
        // Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
-        System.out.println(zoo);
 
         double uctConstant = 1;
         //Agent base = new RandomAgent();
-        ExecutorService executor = Executors.newFixedThreadPool(1);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
 
-        //Agent base = new RandomAgent();
-        Agent base = new UctAgent(nMonkies, uctConstant);
-        Agent agent = new ThreadedPolicyRolloutAgent(base, 1, -1, executor);
+        Agent base = new RandomAgent();
+        Agent agent = new ThreadedUctAgent(nMonkies, uctConstant, executor);
         // This is just a useful agent, same as what the gui has.
         //new GreedyOptimizeMove(new WeightedHeuristic());
 
@@ -111,6 +110,8 @@ public class HearthstoneArbiter {
         context.play();
         System.out.println("Winner");
         System.out.println(context.getWinningPlayerId());
+        System.out.println(context);
+        executor.shutdownNow();
 
     }
 

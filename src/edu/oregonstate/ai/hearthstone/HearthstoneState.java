@@ -18,12 +18,13 @@ public class HearthstoneState implements State {
 
     public HearthstoneState(GameContext context) {
         this.gameContext = context;
+        this.setLegalActions(context.getValidActions());
         //this.legalActions = context.getValidActions();
     }
 
     public HearthstoneState(GameContext context, List<GameAction> legalActions) {
         this.gameContext = context;
-        this.legalActions = legalActions;
+        this.setLegalActions(legalActions);
     }
 
 
@@ -35,9 +36,10 @@ public class HearthstoneState implements State {
             //System.out.println("AFTER CLONE" + this.gameContext.clone().getValidActions());
             //return new HearthstoneState(this.gameContext.clone(), this.getLegalActions());
         } else{
-            return new HearthstoneState(this.gameContext.clone());
+            //return new HearthstoneState(this.gameContext.clone());
         }
-        return new HearthstoneState(this.gameContext.clone());
+        return new HearthstoneState(this.gameContext.clone(), this.getLegalActions());
+        //return new HearthstoneState(this.gameContext.clone());
 
     }
 
@@ -66,13 +68,25 @@ public class HearthstoneState implements State {
     }
 
     public void setLegalActions(List<GameAction> legalActions){
-        this.legalActions = legalActions;
+
+        ArrayList<GameAction> newActions = new ArrayList<GameAction>();
+        for (GameAction action: legalActions){
+            newActions.add(action);
+        }
+        this.legalActions = newActions;
     }
 
     public List<GameAction> getLegalActions(){
+        if (!this.legalActions.equals(this.gameContext.getValidActions())) {
+            //whoops
+            //this.setLegalActions(this.gameContext.getValidActions());
+        }
+
+
         if (this.legalActions != null){
             return this.legalActions;
         } else{
+            System.out.println("impossibru");
             return this.gameContext.getValidActions();
         }
     }

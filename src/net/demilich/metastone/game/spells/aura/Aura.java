@@ -72,6 +72,9 @@ public class Aura extends SpellTrigger {
 		Player owner = context.getPlayer(getOwner());
 		Actor sourceActor = (Actor) context.resolveSingleTarget(getHostReference());
 		List<Entity> resolvedTargets = context.resolveTarget(owner, sourceActor, targets);
+        if (resolvedTargets == null){
+            return;
+        }
 		List<Entity> relevantTargets = new ArrayList<Entity>(resolvedTargets);
 		for (Iterator<Integer> iterator = affectedEntities.iterator(); iterator.hasNext();) {
 			int entityId = iterator.next();

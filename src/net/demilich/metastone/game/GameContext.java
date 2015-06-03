@@ -307,14 +307,11 @@ public class GameContext implements Cloneable, IDisposable {
 		while (!gameDecided()) {
 			startTurn(activePlayer);
 
-			System.out.println(this);
 			double starttime = System.currentTimeMillis();
 			while(playTurn());
 			if (getTurn() > GameLogic.TURN_LIMIT) {
 				break;
 			}
-			System.out.println(this);
-			System.out.println("\n");
 			double endtime = System.currentTimeMillis();
 			timePerTurn[activePlayer] += endtime - starttime;
 		}
@@ -328,6 +325,7 @@ public class GameContext implements Cloneable, IDisposable {
 
 	/**
 	 * Takes the passed action in the current context of the game
+     *
 	 * @param action
 	 * @return If the it is still the current players turn
 	 */
@@ -340,7 +338,7 @@ public class GameContext implements Cloneable, IDisposable {
 		//don't do this unless the player has changed?
 
 		if (++actionsThisTurn > 99) {
-			logger.warn("Turn has been forcefully ended after {} actions", actionsThisTurn);
+			logger.warn("!Turn has been forcefully ended after {} actions", actionsThisTurn);
 			endTurn();
 			startTurn(activePlayer);
 
@@ -378,10 +376,10 @@ public class GameContext implements Cloneable, IDisposable {
 			return false;
 		}
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
-		//System.out.println("PLAYER: " + getActivePlayerId());
+		System.out.print("PLAYER: " + getActivePlayerId());
 		//System.out.println("BEHAVIOUR: " + getActivePlayer().getBehaviour().getBasePolicy());
 
-		System.out.println("ACTION: " + nextAction);
+		System.out.println(" ACTION: " + nextAction);
 
 		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {

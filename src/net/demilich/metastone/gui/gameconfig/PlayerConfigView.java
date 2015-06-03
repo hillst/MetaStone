@@ -3,12 +3,12 @@ package net.demilich.metastone.gui.gameconfig;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import edu.oregonstate.ai.hearthstone.MCTSAgent;
 import edu.oregonstate.eecs.mcplan.Agent;
-import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
-import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
-import edu.oregonstate.eecs.mcplan.agents.UctAgent;
+import edu.oregonstate.eecs.mcplan.agents.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -170,8 +170,9 @@ public class PlayerConfigView extends VBox {
 
 		behaviourList.add(new PlayRandomBehaviour());
 		Agent base = new RandomAgent();
-		Agent agent = new UctAgent(100, 1);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
 
+        Agent agent = new ThreadedUctAgent(80000, 1, executor);
 		//TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
 		behaviourList.add(new MCTSAgent(agent, base));
 

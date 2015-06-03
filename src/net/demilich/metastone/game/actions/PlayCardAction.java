@@ -46,11 +46,7 @@ public abstract class PlayCardAction extends GameAction {
 			}
 
 		} catch (Exception e) {
-			logger.error("ERROR while playing card " + card + " reference: " + cardReference);
-			logger.error("Player1: " + context.getPlayer1().getName());
-			logger.error("Player2: " + context.getPlayer2().getName());
-			e.printStackTrace();
-			System.exit(-1);
+
 			throw e;
 		}
 

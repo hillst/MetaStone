@@ -45,9 +45,9 @@ public class MCTSAgent extends Behaviour {
 
     @Override
     public GameAction requestAction(GameContext context, Player player, List<GameAction> validActions) {
-        HearthstoneState triggerState = new HearthstoneState(context);
-        triggerState.setLegalActions(validActions);
-        return (GameAction) this.policy.selectAction(triggerState, new HearthstoneSimulator(context));
+        HearthstoneState triggerState = new HearthstoneState(context, validActions);
+        //triggerState.setLegalActions(validActions);
+        return (GameAction) this.policy.selectAction(triggerState, new HearthstoneSimulator(context, triggerState));
     }
 
     public Agent getPolicy(){
