@@ -4,38 +4,74 @@ import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import net.demilich.metastone.game.GameContext;
 import net.demilich.metastone.game.Player;
+import net.demilich.metastone.game.behaviour.Behaviour;
+import net.demilich.metastone.game.behaviour.GreedyOptimizeMove;
 import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
+import net.demilich.metastone.game.behaviour.heuristic.WeightedHeuristic;
 import net.demilich.metastone.game.behaviour.value.ActionValueBehaviour;
 import net.demilich.metastone.game.decks.Deck;
 import net.demilich.metastone.game.logic.GameLogic;
 import net.demilich.metastone.gui.deckbuilder.importer.HearthPwnImporter;
 import net.demilich.metastone.gui.gameconfig.PlayerConfig;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 /**
  * Created by eiii on 5/28/15.
  */
 public class AgentTest {
+    public static Dictionary<String, Deck> decks;
 
     public static void main(String args[]) {
-        System.out.println("Starting...");
-        Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
-        Deck rogue = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue");
-        Deck shaman = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy");
-        System.out.println("Zoo:");
-        random_random(zoo);
-        random_heuristic(zoo);
-        uct_random(zoo);
-        uct_heuristic(zoo);
-        System.out.println("Rogue:");
-        random_random(rogue);
-        random_heuristic(rogue);
-        uct_random(rogue);
-        uct_heuristic(rogue);
-        System.out.println("Shaman:");
-        random_random(shaman);
-        random_heuristic(shaman);
-        uct_random(shaman);
-        uct_heuristic(shaman);
+        decks = new Hashtable<>();
+        PlayerConfig p1 = makePlayer("UCT.100.1", "ZOO");
+        p1.setName("UCT");
+        PlayerConfig p2 = makePlayer("RANDOM", "ZOO");
+        p2.setName("RANDOM");
+        int count = 5;
+        AgentTest test = new AgentTest(p1, p2, count);
+        test.getResult().printResult();
+    }
+
+    public static PlayerConfig makePlayer(String methodName, String deckName) {
+        Deck deck = loadDeck(deckName);
+        Behaviour behaviour = loadBehaviour(methodName);
+        return new PlayerConfig(deck, behaviour);
+    }
+
+    public static Behaviour loadBehaviour(String name) {
+        String[] nameArray = name.split("\\.");
+        if (nameArray[0].equals("UCT")) {
+            int num = Integer.parseInt(nameArray[1]);
+            double c = Double.parseDouble(nameArray[2]);
+            return new MCTSAgent(new UctAgent(num, c), new RandomAgent());
+        } else if (nameArray[0].equals("RANDOM")) {
+            return new PlayRandomBehaviour();
+        } else if (nameArray[0].equals("FIXED")) {
+            new GreedyOptimizeMove(new WeightedHeuristic());
+        }
+        //TODO: Exception
+        throw new RuntimeException("Couldn't find behaviour!");
+    }
+
+    public static Deck loadDeck(String name) {
+        Deck deck = decks.get(name);
+        if (deck == null) {
+            String url;
+            if (name == "ZOO") {
+                url = "http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update";
+            } else if (name == "ROGUE") {
+                url = "http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue";
+            } else if (name == "SHAMAN") {
+                url = "http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy";
+            } else {
+                throw new RuntimeException("Couldn't find deck!");
+            }
+            deck = new HearthPwnImporter().importFrom(url);
+            decks.put(name, deck);
+        }
+        return deck;
     }
 
     public static void random_random(Deck deck) {
@@ -47,7 +83,7 @@ public class AgentTest {
 
     public static void random_heuristic(Deck deck) {
         PlayerConfig randomPlayer = new PlayerConfig(deck, new PlayRandomBehaviour());
-        PlayerConfig greedyPlayer = new PlayerConfig(deck, new ActionValueBehaviour());
+        PlayerConfig greedyPlayer = new PlayerConfig(deck, new GreedyOptimizeMove(new WeightedHeuristic()));
         randomPlayer.setName("Random");
         greedyPlayer.setName("Greedy");
         AgentTest randomTest = new AgentTest(randomPlayer, greedyPlayer, 1000);
@@ -65,7 +101,7 @@ public class AgentTest {
 
     public static void uct_heuristic(Deck deck) {
         PlayerConfig uctPlayer = new PlayerConfig(deck, new MCTSAgent(new UctAgent(100, 1.0), new RandomAgent()));
-        PlayerConfig greedyPlayer = new PlayerConfig(deck, new ActionValueBehaviour());
+        PlayerConfig greedyPlayer = new PlayerConfig(deck, new GreedyOptimizeMove(new WeightedHeuristic()));
         uctPlayer.setName("UCT");
         greedyPlayer.setName("Greedy");
         AgentTest randomTest = new AgentTest(uctPlayer, greedyPlayer, 10);
@@ -86,6 +122,7 @@ public class AgentTest {
 
     private void runTest(int totalGames) {
         result = new Result(players);
+        double startTime = System.currentTimeMillis();
         for (int i = 0; i < totalGames; i++) {
             Player p1 = new Player(players[0]);
             Player p2 = new Player(players[1]);
@@ -94,6 +131,9 @@ public class AgentTest {
             context.play();
             result.addWin(context.getWinningPlayerId());
         }
+        double time = System.currentTimeMillis() - startTime;
+        double timePerGame = time / totalGames;
+        result.setTimePerGame(timePerGame);
     }
 
     public Result getResult() { return result; }
@@ -102,6 +142,7 @@ public class AgentTest {
         private int[] wins = new int[2];
         private String[] names = new String[2];
         private int totalGames;
+        private double timePerGame;
 
         public Result(PlayerConfig[] players) {
             wins[0] = wins[1] = 0;
@@ -124,10 +165,13 @@ public class AgentTest {
                 System.out.print(": ");
                 System.out.println(winRate(i));
             }
+            System.out.println(timePerGame + "ms per game");
+            System.out.print("\n");
         }
 
         public int[] getWins() { return wins; }
         public float winRate(int player) { return (float)getWins()[player]/totalGames(); }
         public int totalGames() { return totalGames; }
+        public void setTimePerGame(double timePerGame) { this.timePerGame = timePerGame; }
     }
 }
