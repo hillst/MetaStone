@@ -77,6 +77,7 @@ public class HearthstoneSimulator extends Simulator {
      * It's possible that these should be parameters.
      */
     private void computeRewards() {
+        int[] rewards = new int[2];
         if (this.isTerminalState()){
             int winner = this.state.getWinningPlayerId();
             int loser;
@@ -86,14 +87,15 @@ public class HearthstoneSimulator extends Simulator {
                 } else{
                     loser = 0;
                 }
-                rewards_[winner] += 5;
-                rewards_[loser] -= 1;
+                rewards[winner] = 5;
+                rewards[loser] = -1;
             }
-
         } else{
-            //rewards_[this.state.getAgentTurn()]--;
-
+            //rewards[this.state.getAgentTurn()] = -1;
         }
+
+        rewards_ = rewards;
+
     }
 
     @Override

@@ -170,7 +170,7 @@ public class PlayerConfigView extends VBox {
 
 		behaviourList.add(new PlayRandomBehaviour());
 		Agent base = new RandomAgent();
-		Agent agent = new UctAgent(100, 1);
+		Agent agent = new UctAgent(2000, 1);
 
 		//TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
 		behaviourList.add(new MCTSAgent(agent, base));

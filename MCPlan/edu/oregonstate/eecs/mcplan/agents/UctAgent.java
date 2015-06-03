@@ -345,6 +345,9 @@ public final class UctAgent extends Agent {
                 }
             }
         }
+        for (int i = 0; i < rootActionRewards[0].length; i++) {
+            System.out.println("Action: " + legalActions.get(i) + " REWARD: " + rootActionRewards[0][i]);
+        }
         return legalActions.get(selectActionIndex(rootActionRewards,
                 rootActionVisits, ensembleMethod_));
     }

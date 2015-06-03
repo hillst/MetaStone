@@ -378,10 +378,10 @@ public class GameContext implements Cloneable, IDisposable {
 			return false;
 		}
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
-		//System.out.println("PLAYER: " + getActivePlayerId());
+		System.out.print("PLAYER: " + getActivePlayerId());
 		//System.out.println("BEHAVIOUR: " + getActivePlayer().getBehaviour().getBasePolicy());
 
-		System.out.println("ACTION: " + nextAction);
+		System.out.println(" ACTION: " + nextAction);
 
 		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {
@@ -391,8 +391,11 @@ public class GameContext implements Cloneable, IDisposable {
 			throw new RuntimeException("Behaviour " + getActivePlayer().getBehaviour().getName() + " selected NULL action while "
 					+ getValidActions().size() + " actions were available");
 		}
+        if (this.getPlayer2().getHero().getHp() < 3){
+            System.out.println(getValidActions());
+            System.out.println("end game end...");
+        }
 		performAction(activePlayer, nextAction);
-
 		return nextAction.getActionType() != ActionType.END_TURN;
 	}
 

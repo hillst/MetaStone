@@ -34,7 +34,7 @@ public class HearthstoneArbiter {
         //simsPSecond();
         //int nMonkies = Integer.parseInt(dicks[0]);
         try {
-            uctVRandom(100);
+            uctVRandom(2000);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -86,9 +86,9 @@ public class HearthstoneArbiter {
         //Agent base = new RandomAgent();
         ExecutorService executor = Executors.newFixedThreadPool(1);
 
-        //Agent base = new RandomAgent();
-        Agent base = new UctAgent(nMonkies, uctConstant);
-        Agent agent = new ThreadedPolicyRolloutAgent(base, 1, -1, executor);
+        Agent base = new RandomAgent();
+        Agent agent = new UctAgent(nMonkies, uctConstant);
+        //Agent agent = new ThreadedPolicyRolloutAgent(base, 1, -1, executor);
         // This is just a useful agent, same as what the gui has.
         //new GreedyOptimizeMove(new WeightedHeuristic());
 
