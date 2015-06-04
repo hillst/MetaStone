@@ -379,15 +379,7 @@ public class GameContext implements Cloneable, IDisposable {
 			return false;
 		}
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
-<<<<<<< HEAD
-		//System.out.print("PLAYER: " + getActivePlayerId());
-		//System.out.println("BEHAVIOUR: " + getActivePlayer().getBehaviour().getBasePolicy());
 
-		//System.out.println(" ACTION: " + nextAction);
-
-=======
-		//System.out.println("ACTION: " + nextAction);
->>>>>>> 7e367a5ed235dd9f26339c0e2b2fb14553bfd800
 		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {
 			nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
