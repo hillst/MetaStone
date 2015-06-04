@@ -172,6 +172,24 @@ class Result implements Serializable {
         names[1] = players[1].getName();
     }
 
+    public void addResult(Result other) {
+        if (names[0].equals(other.names[0]) && names[1].equals(other.names[1])) {
+            //Update time calculation
+            int newTotalGames = totalGames + other.totalGames;
+            double myTotalTime = timePerGame * totalGames;
+            double otherTotalTime = other.timePerGame * other.totalGames;
+            double totalTime = myTotalTime + otherTotalTime;
+            timePerGame = totalTime / (double)newTotalGames;
+            totalGames = newTotalGames;
+
+            //Update wins
+            wins[0] += other.wins[0];
+            wins[1] += other.wins[1];
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
     public void addWin(int playerNum) {
         totalGames++;
         if (playerNum != -1) {
@@ -182,15 +200,14 @@ class Result implements Serializable {
     public void printResult() {
         System.out.println("Result:");
         for (int i = 0; i < 2; i++) {
-            System.out.print(names[i]);
-            System.out.print(": ");
-            System.out.println(winRate(i));
+            System.out.println(String.format("%s: %d (%f)", names[i], wins[i], winRate(i)));
         }
         System.out.println(timePerGame + "ms per game");
         System.out.print("\n");
     }
 
     public int[] getWins() { return wins; }
+    public String[] getNames() { return names; }
     public float winRate(int player) { return (float)getWins()[player]/totalGames(); }
     public int totalGames() { return totalGames; }
     public void setTimePerGame(double timePerGame) { this.timePerGame = timePerGame; }
