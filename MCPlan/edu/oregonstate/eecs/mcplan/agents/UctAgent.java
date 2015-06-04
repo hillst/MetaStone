@@ -322,7 +322,10 @@ public final class UctAgent extends Agent {
         // If only one action possible skip action selection algorithms
         if (legalActions.size() == 1)
             return legalActions.get(0);
-
+        boolean steveRules = false;
+        if (steveRules){
+            legalActions = legalActions.subList(0,1);
+        }
 
 
         int agentTurn = iSimulator.getState().getAgentTurn();

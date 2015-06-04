@@ -56,7 +56,6 @@ public class ActionLogic {
 			if (!minion.canAttackThisTurn()) {
 				continue;
 			}
-
 			rollout(new PhysicalAttackAction(minion.getReference()), context, player, physicalAttackActions);
 		}
 		return physicalAttackActions;

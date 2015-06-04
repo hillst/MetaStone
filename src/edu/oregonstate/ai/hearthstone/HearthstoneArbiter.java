@@ -34,7 +34,7 @@ public class HearthstoneArbiter {
         //simsPSecond();
         //int nMonkies = Integer.parseInt(dicks[0]);
         try {
-            uctVRandom(2000);
+            uctVRandom(50);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -77,14 +77,15 @@ public class HearthstoneArbiter {
         deckProxy.loadDecks();
         MetaDeck metaDeck = new MetaDeck(deckProxy.getDecks());
         // Obviously this is really rough and we should be *extremely* specific with the decks we have.
-        Deck zoo = metaDeck.getDecks().get(3);
+        //Deck zoo = metaDeck.getDecks().get(3);
         Deck handlock = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update");
-       // Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
-        System.out.println(zoo);
+        Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
+        Deck zoo2 = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
+
+       // System.out.println(zoo);
 
         double uctConstant = 1;
         //Agent base = new RandomAgent();
-        ExecutorService executor = Executors.newFixedThreadPool(1);
 
         Agent base = new RandomAgent();
         Agent agent = new UctAgent(nMonkies, uctConstant);
@@ -98,7 +99,9 @@ public class HearthstoneArbiter {
         PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, base));
 
         pc.setName("Player 1");
-        PlayerConfig pc2 = new PlayerConfig(zoo, new GreedyOptimizeMove(new WeightedHeuristic()));
+        PlayerConfig pc2 = new PlayerConfig(zoo2, new PlayRandomBehaviour());
+
+        //PlayerConfig pc2 = new PlayerConfig(zoo, new GreedyOptimizeMove(new WeightedHeuristic()));
         //PlayerConfig pc2 = new PlayerConfig(zoo, new ActionValueBehaviour());
         pc2.setName("Player 2");
         Player p1 = new Player(pc);

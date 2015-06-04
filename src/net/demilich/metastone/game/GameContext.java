@@ -359,7 +359,7 @@ public class GameContext implements Cloneable, IDisposable {
 		if (action.getActionType() == ActionType.END_TURN){
 			startTurn(activePlayer);
 		}
-
+		//TODO game should be over here
 		return action.getActionType() != ActionType.END_TURN;
 
 	}
@@ -373,11 +373,17 @@ public class GameContext implements Cloneable, IDisposable {
 
 
 		List<GameAction> validActions = getValidActions();
+		if (this.getPlayer2().getHero().getHp() < 3){
+			System.out.println(getValidActions());
+			System.out.println("end game end...");
+		}
+
 		if (validActions.size() == 0) {
 			endTurn();
 			return false;
 		}
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
+
 		System.out.print("PLAYER: " + getActivePlayerId());
 		//System.out.println("BEHAVIOUR: " + getActivePlayer().getBehaviour().getBasePolicy());
 
@@ -391,10 +397,6 @@ public class GameContext implements Cloneable, IDisposable {
 			throw new RuntimeException("Behaviour " + getActivePlayer().getBehaviour().getName() + " selected NULL action while "
 					+ getValidActions().size() + " actions were available");
 		}
-        if (this.getPlayer2().getHero().getHp() < 3){
-            System.out.println(getValidActions());
-            System.out.println("end game end...");
-        }
 		performAction(activePlayer, nextAction);
 		return nextAction.getActionType() != ActionType.END_TURN;
 	}

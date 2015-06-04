@@ -87,7 +87,7 @@ public class HearthstoneSimulator extends Simulator {
                 } else{
                     loser = 0;
                 }
-                rewards[winner] = 5;
+                rewards[winner] = 1;
                 rewards[loser] = -1;
             }
         } else{
