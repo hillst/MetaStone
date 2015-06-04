@@ -80,7 +80,7 @@ public class HearthstoneArbiter {
         //Deck zoo = metaDeck.getDecks().get(3);
         Deck handlock = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update");
         Deck zoo = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
-        Deck zoo2 = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update");
+        Deck zoo2 = new HearthPwnImporter().importFrom("http://www.hearthpwn.com/decks/254131-s14-berserkcis-legend-rank-kelthuzad-mid-range");
 
        // System.out.println(zoo);
 

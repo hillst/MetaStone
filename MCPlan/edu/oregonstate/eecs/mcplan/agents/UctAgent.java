@@ -5,9 +5,11 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.oregonstate.ai.hearthstone.HearthstoneState;
 import edu.oregonstate.eecs.mcplan.Agent;
 import edu.oregonstate.eecs.mcplan.Simulator;
 import edu.oregonstate.eecs.mcplan.State;
+import net.demilich.metastone.game.actions.GameAction;
 
 /**
  * Enhanced UCT agent that can be run as normal UCT or a modified version of UCT
@@ -325,6 +327,7 @@ public final class UctAgent extends Agent {
         boolean steveRules = false;
         if (steveRules){
             legalActions = legalActions.subList(0,1);
+            ((HearthstoneState)iSimulator.getState()).setLegalActions((List<GameAction>)legalActions);
         }
 
 

@@ -175,7 +175,6 @@ public class PlayerConfigView extends VBox {
 		//TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
 		behaviourList.add(new MCTSAgent(agent, base));
 
-
 		behaviourList.add(new GreedyOptimizeMove(new WeightedHeuristic()));
 		behaviourList.add(new NoAggressionBehaviour());
 
