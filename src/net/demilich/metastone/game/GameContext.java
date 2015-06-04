@@ -371,18 +371,16 @@ public class GameContext implements Cloneable, IDisposable {
 
 
 		List<GameAction> validActions = getValidActions();
-		if (this.getPlayer2().getHero().getHp() < 4){
-			System.out.println("end pls");
-		}
+
 		if (validActions.size() == 0) {
 			endTurn();
 			return false;
 		}
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
-		System.out.print("PLAYER: " + getActivePlayerId());
+		//System.out.print("PLAYER: " + getActivePlayerId());
 		//System.out.println("BEHAVIOUR: " + getActivePlayer().getBehaviour().getBasePolicy());
 
-		System.out.println(" ACTION: " + nextAction);
+		//System.out.println(" ACTION: " + nextAction);
 
 		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {

@@ -324,11 +324,6 @@ public final class UctAgent extends Agent {
         // If only one action possible skip action selection algorithms
         if (legalActions.size() == 1)
             return legalActions.get(0);
-        boolean steveRules = false;
-        if (steveRules){
-            legalActions = legalActions.subList(0,1);
-            ((HearthstoneState)iSimulator.getState()).setLegalActions((List<GameAction>)legalActions);
-        }
 
 
         int agentTurn = iSimulator.getState().getAgentTurn();
@@ -350,9 +345,6 @@ public final class UctAgent extends Agent {
                     rootActionVisits[i][j] = children.get(j).getVisits();
                 }
             }
-        }
-        for (int i = 0; i < rootActionRewards[0].length; i++) {
-            System.out.println("Action: " + legalActions.get(i) + " REWARD: " + rootActionRewards[0][i]);
         }
         return legalActions.get(selectActionIndex(rootActionRewards,
                 rootActionVisits, ensembleMethod_));

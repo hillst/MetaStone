@@ -21,10 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import net.demilich.metastone.game.behaviour.GreedyOptimizeMove;
-import net.demilich.metastone.game.behaviour.IBehaviour;
-import net.demilich.metastone.game.behaviour.NoAggressionBehaviour;
-import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
+import net.demilich.metastone.game.behaviour.*;
 import net.demilich.metastone.game.behaviour.heuristic.WeightedHeuristic;
 import net.demilich.metastone.game.behaviour.human.HumanBehaviour;
 import net.demilich.metastone.game.behaviour.threat.GameStateValueBehaviour;
@@ -170,10 +167,28 @@ public class PlayerConfigView extends VBox {
 
 		behaviourList.add(new PlayRandomBehaviour());
 		Agent base = new RandomAgent();
-		Agent agent = new UctAgent(2000, 1);
+		Agent agent = new UctAgent(1000, 1);
+		MCTSAgent easyAgent = new MCTSAgent(agent, base);
+		easyAgent.setName("MCTS Agent (easy)");
+		behaviourList.add(easyAgent);
 
-		//TODO keep working on this base rollout thing. It shouldn't be UTC all the way to the bottom. It should be UTC for one level then random.
-		behaviourList.add(new MCTSAgent(agent, base));
+		Agent base1 = new RandomAgent();
+		Agent agent1 = new UctAgent(5000, 1);
+		MCTSAgent mediumAgent = new MCTSAgent(agent, base);
+		easyAgent.setName("MCTS Agent (medium)");
+		behaviourList.add(easyAgent);
+
+		Agent base2 = new RandomAgent();
+		Agent agent2 = new UctAgent(10000, 1);
+		MCTSAgent hardAgent = new MCTSAgent(agent, base);
+		easyAgent.setName("MCTS Agent (hard)");
+		behaviourList.add(easyAgent);
+
+		Agent base3 = new RandomAgent();
+		Agent agent3 = new UctAgent(50000, 1);
+		MCTSAgent insaneAgent = new MCTSAgent(agent, base);
+		easyAgent.setName("MCTS Agent (insane)");
+		behaviourList.add(easyAgent);
 
 		behaviourList.add(new GreedyOptimizeMove(new WeightedHeuristic()));
 		behaviourList.add(new NoAggressionBehaviour());

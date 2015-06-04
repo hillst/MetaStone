@@ -1,7 +1,6 @@
 package edu.oregonstate.ai.hearthstone;
 
 import edu.oregonstate.eecs.mcplan.Agent;
-import edu.oregonstate.eecs.mcplan.agents.ThreadedPolicyRolloutAgent;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import net.demilich.metastone.game.GameContext;
@@ -9,21 +8,14 @@ import net.demilich.metastone.game.Player;
 import net.demilich.metastone.game.behaviour.GreedyOptimizeMove;
 import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
 import net.demilich.metastone.game.behaviour.heuristic.WeightedHeuristic;
-import net.demilich.metastone.game.behaviour.value.ActionValueBehaviour;
 import net.demilich.metastone.game.decks.Deck;
-import net.demilich.metastone.game.decks.DeckFactory;
 import net.demilich.metastone.game.decks.MetaDeck;
-import net.demilich.metastone.game.entities.heroes.HeroClass;
 import net.demilich.metastone.game.logic.GameLogic;
-import net.demilich.metastone.gui.common.DeckStringConverter;
 import net.demilich.metastone.gui.deckbuilder.DeckProxy;
 import net.demilich.metastone.gui.deckbuilder.importer.HearthPwnImporter;
 import net.demilich.metastone.gui.gameconfig.PlayerConfig;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Hill on 5/27/15.
@@ -34,7 +26,7 @@ public class HearthstoneArbiter {
         //simsPSecond();
         //int nMonkies = Integer.parseInt(dicks[0]);
         try {
-            uctVRandom(50);
+            uctVRandom(10000);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -99,9 +91,9 @@ public class HearthstoneArbiter {
         PlayerConfig pc = new PlayerConfig(zoo, new MCTSAgent(agent, base));
 
         pc.setName("Player 1");
-        PlayerConfig pc2 = new PlayerConfig(zoo2, new PlayRandomBehaviour());
+        //PlayerConfig pc2 = new PlayerConfig(zoo2, new PlayRandomBehaviour());
 
-        //PlayerConfig pc2 = new PlayerConfig(zoo, new GreedyOptimizeMove(new WeightedHeuristic()));
+        PlayerConfig pc2 = new PlayerConfig(zoo, new GreedyOptimizeMove(new WeightedHeuristic()));
         //PlayerConfig pc2 = new PlayerConfig(zoo, new ActionValueBehaviour());
         pc2.setName("Player 2");
         Player p1 = new Player(pc);
@@ -112,7 +104,7 @@ public class HearthstoneArbiter {
         GameContext context = new GameContext(p1, p2, logic);
 
         context.play();
-        System.out.println("Winner");
+        System.out.print("Winner ");
         System.out.println(context.getWinningPlayerId());
 
     }

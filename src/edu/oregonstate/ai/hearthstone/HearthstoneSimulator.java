@@ -3,6 +3,7 @@ package edu.oregonstate.ai.hearthstone;
 import edu.oregonstate.eecs.mcplan.Simulator;
 import edu.oregonstate.eecs.mcplan.State;
 import net.demilich.metastone.game.GameContext;
+import net.demilich.metastone.game.Player;
 import net.demilich.metastone.game.actions.GameAction;
 import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
 
@@ -16,6 +17,7 @@ public class HearthstoneSimulator extends Simulator {
 
     /**
      * Ultimately we want the simulator to handle the work, default constructor will do that
+     *
      */
     public HearthstoneSimulator(){
         this.setInitialState();
@@ -32,11 +34,7 @@ public class HearthstoneSimulator extends Simulator {
      */
     public HearthstoneSimulator(HearthstoneState state, int[] rewards){
         GameContext context = state.getContext();
-        ((MCTSAgent)context.getPlayer1().getBehaviour()).policySwap();
-
-        if (!context.getPlayer2().getBehaviour().getName().equals("Play Random")) {
-            context.getPlayer2().setBehaviour(new PlayRandomBehaviour());
-        }
+        setupRollout(context);
         this.state = state;
         this.rewards_ = new int[2];
 
@@ -52,28 +50,46 @@ public class HearthstoneSimulator extends Simulator {
      * @param context
      */
     public HearthstoneSimulator(GameContext context){
-
         GameContext newContext = context.clone();
-        ((MCTSAgent)newContext.getPlayer1().getBehaviour()).policySwap();
-
-
-        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")) {
-            newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
-        }
+        setupRollout(newContext);
         this.state = new HearthstoneState(newContext);
         this.rewards_ = new int[2];
     }
 
     public HearthstoneSimulator(GameContext context, HearthstoneState state){
         GameContext newContext = context.clone();
-        ((MCTSAgent)newContext.getPlayer1().getBehaviour()).policySwap();
-
-
-        if (!newContext.getPlayer2().getBehaviour().getName().equals("Play Random")) {
-            newContext.getPlayer2().setBehaviour(new PlayRandomBehaviour());
-        }
+        setupRollout(newContext);
         this.state = state;
         this.rewards_ = new int[2];
+    }
+
+    /**
+     * We need to make sure the rollouts are happening correctly, since we are using the hearthstone simulator with
+     * MCTS agent, we need to figure out which agent to swap and which agent to set to random (the opposition).
+     *
+     * -- What do we do if they are both UCT agents?
+     * -- Try then test.
+     * @param newContext
+     */
+    private void setupRollout(GameContext newContext){
+        //MCTSAgent
+        Player toChange;
+        Player mcAgent;
+
+        if (newContext.getPlayer1().getBehaviour().getName().equals("MCTSAgent") && newContext.getActivePlayerId() == 0){
+            toChange = newContext.getPlayer2();
+            mcAgent = newContext.getPlayer1();
+        } else{
+            toChange = newContext.getPlayer1();
+            mcAgent = newContext.getPlayer2();
+        }
+        if (mcAgent.getBehaviour().getName() == "MCTSAgent"){
+            ((MCTSAgent)mcAgent.getBehaviour()).policySwap();
+        }
+
+        if (!toChange.equals("Play Random")) {
+            toChange.setBehaviour(new PlayRandomBehaviour());
+        }
     }
 
     public HearthstoneSimulator(GameContext context, int[] rewards){
@@ -84,9 +100,7 @@ public class HearthstoneSimulator extends Simulator {
     }
 
     /**
-     * Gives one point for winning the game and 0 for anything else, should probaly give points for losing.
-     *
-     * It's possible that these should be parameters.
+     * Probably should be in a different functino
      */
     private void computeRewards() {
         if (this.isTerminalState()){
@@ -99,7 +113,7 @@ public class HearthstoneSimulator extends Simulator {
                     loser = 0;
                 }
                 rewards_[winner] = 1;
-                rewards_[loser] = -100;
+                rewards_[loser] = -1;
             }
         }
     }
@@ -120,6 +134,7 @@ public class HearthstoneSimulator extends Simulator {
     @Override
     public void setState(State state) {
         this.state = (HearthstoneState) state;
+        this.computeRewards();
 
     }
     @Override
@@ -141,6 +156,7 @@ public class HearthstoneSimulator extends Simulator {
     public void setState(State state, List legalActions) {
         this.state = (HearthstoneState) state;
         this.state.setLegalActions(legalActions);
+        this.computeRewards();
     }
 
     @Override
