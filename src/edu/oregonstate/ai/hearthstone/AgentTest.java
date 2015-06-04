@@ -67,7 +67,7 @@ public class AgentTest {
         } else if (nameArray[0].equals("RANDOM")) {
             return new PlayRandomBehaviour();
         } else if (nameArray[0].equals("FIXED")) {
-            new GreedyOptimizeMove(new WeightedHeuristic());
+            return new GreedyOptimizeMove(new WeightedHeuristic());
         }
         //TODO: Exception
         throw new RuntimeException("Couldn't find behaviour!");
