@@ -67,7 +67,7 @@ public class AgentTest {
         } else if (nameArray[0].equals("RANDOM")) {
             return new PlayRandomBehaviour();
         } else if (nameArray[0].equals("FIXED")) {
-            new GreedyOptimizeMove(new WeightedHeuristic());
+            return new GreedyOptimizeMove(new WeightedHeuristic());
         }
         //TODO: Exception
         throw new RuntimeException("Couldn't find behaviour!");
@@ -77,10 +77,14 @@ public class AgentTest {
         String url;
         if (name.equals("ZOO")) {
             url = "http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update";
-        } else if (name.equals("ROGUE")) {
-            url = "http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue";
-        } else if (name.equals("SHAMAN")) {
-            url = "http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy";
+        } else if (name.equals("WARRIOR")) {
+            url = "http://www.hearthpwn.com/decks/81605-breebotjr-control-warrior";
+        } else if (name.equals("HUNTER")) {
+            url = "http://www.hearthpwn.com/decks/136213-gvg-face-hunter-season-9-legend-24-na";
+        } else if (name.equals("PRIEST")) {
+            url = "http://www.hearthpwn.com/decks/235995-rank-4-to-legend-wombo-combo-priest";
+        } else if (name.equals("HANDLOCK")) {
+            url = "http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update";
         } else {
             throw new RuntimeException("Couldn't find deck!");
         }
