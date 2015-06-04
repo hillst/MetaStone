@@ -306,18 +306,20 @@ public class GameContext implements Cloneable, IDisposable {
 		init();
 		while (!gameDecided()) {
 			startTurn(activePlayer);
-
 			double starttime = System.currentTimeMillis();
 			while(playTurn());
 			if (getTurn() > GameLogic.TURN_LIMIT) {
 				break;
 			}
+
 			double endtime = System.currentTimeMillis();
 			timePerTurn[activePlayer] += endtime - starttime;
 		}
 		//these are off by one because of how active player works lol
+		/*
 		System.out.println("Player 1 time per turn (ms): " + timePerTurn[1]/ this.turn);
 		System.out.println("Player 2 time per turn (ms): "+ timePerTurn[0]/ this.turn);
+		*/
 
 		endGame();
 
@@ -377,11 +379,15 @@ public class GameContext implements Cloneable, IDisposable {
 			return false;
 		}
 		GameAction nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
+<<<<<<< HEAD
 		//System.out.print("PLAYER: " + getActivePlayerId());
 		//System.out.println("BEHAVIOUR: " + getActivePlayer().getBehaviour().getBasePolicy());
 
 		//System.out.println(" ACTION: " + nextAction);
 
+=======
+		//System.out.println("ACTION: " + nextAction);
+>>>>>>> 7e367a5ed235dd9f26339c0e2b2fb14553bfd800
 		//This code doesn't do anything?
 		while (!acceptAction(nextAction)) {
 			nextAction = getActivePlayer().getBehaviour().requestAction(this, getActivePlayer(), getValidActions());
