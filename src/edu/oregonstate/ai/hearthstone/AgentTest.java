@@ -14,6 +14,7 @@ import net.demilich.metastone.game.logic.GameLogic;
 import net.demilich.metastone.gui.deckbuilder.importer.HearthPwnImporter;
 import net.demilich.metastone.gui.gameconfig.PlayerConfig;
 
+import java.io.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -25,13 +26,32 @@ public class AgentTest {
 
     public static void main(String args[]) {
         decks = new Hashtable<>();
-        PlayerConfig p1 = makePlayer("UCT.100.1", "ZOO");
-        p1.setName("UCT");
-        PlayerConfig p2 = makePlayer("RANDOM", "ZOO");
-        p2.setName("RANDOM");
-        int count = 5;
+        int field = 0;
+        int id = Integer.parseInt(args[field++]);
+        String p1Deck = args[field++];
+        String p1Method = args[field++];
+        String p2Deck = args[field++];
+        String p2Method = args[field++];
+        int count = Integer.parseInt(args[field++]);
+        System.out.println(String.format("{%d} Starting %s (%s) vs %s (%s), %d trials.", id, p1Deck, p1Method, p2Deck, p2Method, count));
+
+        PlayerConfig p1 = makePlayer(p1Method, p1Deck);
+        p1.setName(p1Deck + ", " + p1Method);
+        PlayerConfig p2 = makePlayer(p2Method, p2Deck);
+        p2.setName(p2Deck + ", " + p2Method);
         AgentTest test = new AgentTest(p1, p2, count);
-        test.getResult().printResult();
+        Result result = test.getResult();
+        result.printResult();
+        try {
+            String fname = ClusterManager.makeFilename(id);
+            FileOutputStream fileStream = new FileOutputStream(fname);
+            ObjectOutputStream objOut = new ObjectOutputStream(fileStream);
+            objOut.writeObject(result);
+            objOut.close();
+            fileStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static PlayerConfig makePlayer(String methodName, String deckName) {
@@ -59,11 +79,11 @@ public class AgentTest {
         Deck deck = decks.get(name);
         if (deck == null) {
             String url;
-            if (name == "ZOO") {
+            if (name.equals("ZOO")) {
                 url = "http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update";
-            } else if (name == "ROGUE") {
+            } else if (name.equals("ROGUE")) {
                 url = "http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue";
-            } else if (name == "SHAMAN") {
+            } else if (name.equals("SHAMAN")) {
                 url = "http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy";
             } else {
                 throw new RuntimeException("Couldn't find deck!");
@@ -137,41 +157,41 @@ public class AgentTest {
     }
 
     public Result getResult() { return result; }
+}
 
-    public class Result {
-        private int[] wins = new int[2];
-        private String[] names = new String[2];
-        private int totalGames;
-        private double timePerGame;
+class Result implements Serializable {
+    private int[] wins = new int[2];
+    private String[] names = new String[2];
+    private int totalGames;
+    private double timePerGame;
 
-        public Result(PlayerConfig[] players) {
-            wins[0] = wins[1] = 0;
-            totalGames = 0;
-            names[0] = players[0].getName();
-            names[1] = players[1].getName();
-        }
-
-        public void addWin(int playerNum) {
-            totalGames++;
-            if (playerNum != -1) {
-                wins[playerNum]++;
-            }
-        }
-
-        public void printResult() {
-            System.out.println("Result:");
-            for (int i = 0; i < 2; i++) {
-                System.out.print(names[i]);
-                System.out.print(": ");
-                System.out.println(winRate(i));
-            }
-            System.out.println(timePerGame + "ms per game");
-            System.out.print("\n");
-        }
-
-        public int[] getWins() { return wins; }
-        public float winRate(int player) { return (float)getWins()[player]/totalGames(); }
-        public int totalGames() { return totalGames; }
-        public void setTimePerGame(double timePerGame) { this.timePerGame = timePerGame; }
+    public Result(PlayerConfig[] players) {
+        wins[0] = wins[1] = 0;
+        totalGames = 0;
+        names[0] = players[0].getName();
+        names[1] = players[1].getName();
     }
+
+    public void addWin(int playerNum) {
+        totalGames++;
+        if (playerNum != -1) {
+            wins[playerNum]++;
+        }
+    }
+
+    public void printResult() {
+        System.out.println("Result:");
+        for (int i = 0; i < 2; i++) {
+            System.out.print(names[i]);
+            System.out.print(": ");
+            System.out.println(winRate(i));
+        }
+        System.out.println(timePerGame + "ms per game");
+        System.out.print("\n");
+    }
+
+    public int[] getWins() { return wins; }
+    public float winRate(int player) { return (float)getWins()[player]/totalGames(); }
+    public int totalGames() { return totalGames; }
+    public void setTimePerGame(double timePerGame) { this.timePerGame = timePerGame; }
 }
