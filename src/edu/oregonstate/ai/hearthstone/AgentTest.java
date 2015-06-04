@@ -1,5 +1,7 @@
 package edu.oregonstate.ai.hearthstone;
 
+import edu.oregonstate.eecs.mcplan.Agent;
+import edu.oregonstate.eecs.mcplan.agents.PolicyRollout;
 import edu.oregonstate.eecs.mcplan.agents.UctAgent;
 import edu.oregonstate.eecs.mcplan.agents.RandomAgent;
 import net.demilich.metastone.game.GameContext;
@@ -66,6 +68,13 @@ public class AgentTest {
             int num = Integer.parseInt(nameArray[1]);
             double c = Double.parseDouble(nameArray[2]);
             return new MCTSAgent(new UctAgent(num, c), new RandomAgent());
+        } else if (nameArray[0].equals("POLICY-UCT")) {
+            int width = Integer.parseInt(nameArray[1]);
+            int height = Integer.parseInt(nameArray[2]);
+            int uctNum = Integer.parseInt(nameArray[3]);
+            double uctC = Double.parseDouble(nameArray[4]);
+            Agent base = new UctAgent(uctNum, uctC);
+            return new MCTSAgent(new PolicyRollout(base, width, height), base);
         } else if (nameArray[0].equals("RANDOM")) {
             return new PlayRandomBehaviour();
         } else if (nameArray[0].equals("FIXED")) {
@@ -111,40 +120,6 @@ public class AgentTest {
         }
         //Deck deck = new HearthPwnImporter().importFrom(url);
         return deck;
-    }
-
-    public static void random_random(Deck deck) {
-        PlayerConfig randomPlayer = new PlayerConfig(deck, new PlayRandomBehaviour());
-        randomPlayer.setName("Random");
-        AgentTest randomTest = new AgentTest(randomPlayer, randomPlayer, 1000);
-        randomTest.getResult().printResult();
-    }
-
-    public static void random_heuristic(Deck deck) {
-        PlayerConfig randomPlayer = new PlayerConfig(deck, new PlayRandomBehaviour());
-        PlayerConfig greedyPlayer = new PlayerConfig(deck, new GreedyOptimizeMove(new WeightedHeuristic()));
-        randomPlayer.setName("Random");
-        greedyPlayer.setName("Greedy");
-        AgentTest randomTest = new AgentTest(randomPlayer, greedyPlayer, 1000);
-        randomTest.getResult().printResult();
-    }
-
-    public static void uct_random(Deck deck) {
-        PlayerConfig randomPlayer = new PlayerConfig(deck, new PlayRandomBehaviour());
-        PlayerConfig uctPlayer = new PlayerConfig(deck, new MCTSAgent(new UctAgent(100, 1.0), new RandomAgent()));
-        randomPlayer.setName("Random");
-        uctPlayer.setName("UCT");
-        AgentTest randomTest = new AgentTest(uctPlayer, randomPlayer, 10);
-        randomTest.getResult().printResult();
-    }
-
-    public static void uct_heuristic(Deck deck) {
-        PlayerConfig uctPlayer = new PlayerConfig(deck, new MCTSAgent(new UctAgent(100, 1.0), new RandomAgent()));
-        PlayerConfig greedyPlayer = new PlayerConfig(deck, new GreedyOptimizeMove(new WeightedHeuristic()));
-        uctPlayer.setName("UCT");
-        greedyPlayer.setName("Greedy");
-        AgentTest randomTest = new AgentTest(uctPlayer, greedyPlayer, 10);
-        randomTest.getResult().printResult();
     }
 
     private Result result;
