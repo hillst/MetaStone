@@ -22,10 +22,8 @@ import java.util.Hashtable;
  * Created by eiii on 5/28/15.
  */
 public class AgentTest {
-    public static Dictionary<String, Deck> decks;
 
     public static void main(String args[]) {
-        decks = new Hashtable<>();
         int field = 0;
         int id = Integer.parseInt(args[field++]);
         String p1Deck = args[field++];
@@ -76,21 +74,17 @@ public class AgentTest {
     }
 
     public static Deck loadDeck(String name) {
-        Deck deck = decks.get(name);
-        if (deck == null) {
-            String url;
-            if (name.equals("ZOO")) {
-                url = "http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update";
-            } else if (name.equals("ROGUE")) {
-                url = "http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue";
-            } else if (name.equals("SHAMAN")) {
-                url = "http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy";
-            } else {
-                throw new RuntimeException("Couldn't find deck!");
-            }
-            deck = new HearthPwnImporter().importFrom(url);
-            decks.put(name, deck);
+        String url;
+        if (name.equals("ZOO")) {
+            url = "http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update";
+        } else if (name.equals("ROGUE")) {
+            url = "http://www.hearthpwn.com/decks/307-gang-up-miracle-rogue";
+        } else if (name.equals("SHAMAN")) {
+            url = "http://www.hearthpwn.com/decks/57818-tsafys-top-100-legend-shammy";
+        } else {
+            throw new RuntimeException("Couldn't find deck!");
         }
+        Deck deck = new HearthPwnImporter().importFrom(url);
         return deck;
     }
 
