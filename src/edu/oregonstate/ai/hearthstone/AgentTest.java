@@ -10,7 +10,9 @@ import net.demilich.metastone.game.behaviour.PlayRandomBehaviour;
 import net.demilich.metastone.game.behaviour.heuristic.WeightedHeuristic;
 import net.demilich.metastone.game.behaviour.value.ActionValueBehaviour;
 import net.demilich.metastone.game.decks.Deck;
+import net.demilich.metastone.game.decks.MetaDeck;
 import net.demilich.metastone.game.logic.GameLogic;
+import net.demilich.metastone.gui.deckbuilder.DeckProxy;
 import net.demilich.metastone.gui.deckbuilder.importer.HearthPwnImporter;
 import net.demilich.metastone.gui.gameconfig.PlayerConfig;
 
@@ -75,20 +77,39 @@ public class AgentTest {
 
     public static Deck loadDeck(String name) {
         String url;
+        DeckProxy deckProxy = new DeckProxy();
+        try {
+            deckProxy.loadDecks();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        MetaDeck metaDeck = new MetaDeck(deckProxy.getDecks());
+        Deck deck;
         if (name.equals("ZOO")) {
             url = "http://www.hearthpwn.com/decks/129065-spark-demonic-zoo-s9-brm-update";
+            deck = metaDeck.getDecks().get(1);
+            assert deck.getName().equals("Demonic Zoo (S9 + BRM Update)");
         } else if (name.equals("WARRIOR")) {
             url = "http://www.hearthpwn.com/decks/81605-breebotjr-control-warrior";
+            deck = metaDeck.getDecks().get(0);
+            assert deck.getName().equals("BreeBotJr Control Warrior");
         } else if (name.equals("HUNTER")) {
             url = "http://www.hearthpwn.com/decks/136213-gvg-face-hunter-season-9-legend-24-na";
+            deck = metaDeck.getDecks().get(2);
+            assert deck.getName().equals("(GvG) Face Hunter Season 9 Legend #24 NA");
         } else if (name.equals("PRIEST")) {
             url = "http://www.hearthpwn.com/decks/235995-rank-4-to-legend-wombo-combo-priest";
+            deck = metaDeck.getDecks().get(4);
+            assert deck.getName().equals("Wombo Combo Priest");
         } else if (name.equals("HANDLOCK")) {
             url = "http://www.hearthpwn.com/decks/101155-oblivion-handlock-brm-update";
+            deck = metaDeck.getDecks().get(3);
+            assert deck.getName().equals("\"Oblivion Handlock\" BRM Update");
         } else {
             throw new RuntimeException("Couldn't find deck!");
         }
-        Deck deck = new HearthPwnImporter().importFrom(url);
+        //Deck deck = new HearthPwnImporter().importFrom(url);
         return deck;
     }
 

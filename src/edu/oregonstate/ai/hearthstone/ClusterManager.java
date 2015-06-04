@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
  */
 public class ClusterManager {
     public static void main(String args[]) {
-        String as = Arrays.stream(args).collect(Collectors.joining(" "));
-        ClusterManager manager = new ClusterManager(as);
+        int count = Integer.parseInt(args[0]);
+        String as = Arrays.stream(args, 1, args.length).collect(Collectors.joining(" "));
+        ClusterManager manager = new ClusterManager(count, as);
         manager.scatter();
         manager.gather();
     }
@@ -23,10 +24,11 @@ public class ClusterManager {
 
     private final boolean useCluster = true;
     private String args;
-    private final int count = 2;
+    private int count;
 
-    public ClusterManager(String args) {
+    public ClusterManager(int count, String args) {
         this.args = args;
+        this.count = count;
     }
 
     public void scatter() {
