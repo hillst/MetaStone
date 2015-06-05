@@ -63,7 +63,7 @@ public class AgentTest {
     }
 
     public static Behaviour loadBehaviour(String name) {
-        String[] nameArray = name.split("\\.");
+        String[] nameArray = name.split(":");
         if (nameArray[0].equals("UCT")) {
             int num = Integer.parseInt(nameArray[1]);
             double c = Double.parseDouble(nameArray[2]);
